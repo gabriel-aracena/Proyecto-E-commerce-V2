@@ -1,0 +1,61 @@
+trigger:
+  branches:
+    include:
+      - Develop
+      - QA
+      - master
+
+
+pr:
+  branches:
+    include:
+      - Develop
+      - QA
+      - master
+
+pool:
+  vmImage: 'windows-latest'
+
+variables:
+  buildConfiguration: 'Release'
+
+steps:
+# (opcional) Instalar versión específica de .NET
+- task: UseDotNet@2
+  displayName: 'Instalar .NET SDK'
+  inputs:
+    packageType: 'sdk'
+    version: '9.0.x'   # cámbialo por la versión que uses
+
+# Restaurar todos los proyectos de la solución
+- script: dotnet restore
+  displayName: 'Restaurar dependencias'
+
+# Ejecutar tests del proyecto OnlineSpot.Test
+- task: DotNetCoreCLI@2
+  displayName: 'Ejecutar tests'
+  inputs:
+    command: test
+    projects: 'OnlineSpot.Test/OnlineSpot.Test.csproj'
+    arguments: '--configuration $(buildConfiguration)'
+
+# Compilar el proyecto web OnlineSpot.Web
+- script: dotnet build OnlineSpot.Web/OnlineSpot.Web.csproj --configuration $(buildConfiguration) --no-restore
+  displayName: 'Compilar OnlineSpot.Web'
+
+# Publicar el proyecto web OnlineSpot.Web
+- task: DotNetCoreCLI@2
+  displayName: 'Publicar OnlineSpot.Web'
+  inputs:
+    command: publish
+    publishWebProjects: false
+    projects: 'OnlineSpot.Web/OnlineSpot.Web.csproj'
+    arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)'
+    zipAfterPublish: true
+
+# Publicar artefactos para que el release los use
+- task: PublishBuildArtifacts@1
+  displayName: 'Publicar artefactos'
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'drop'

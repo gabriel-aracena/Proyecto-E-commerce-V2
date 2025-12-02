@@ -1,0 +1,66 @@
+﻿@{
+    ViewData["Title"] = "Contáctanos";
+    Layout = "_Layout";
+}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+    <section class="py-5">
+        <div class="container">
+            <h2 class="fw-bold mb-4 text-center">Contáctanos</h2>
+
+            @if (TempData["Error"] != null)
+            {
+                <div class="alert alert-danger text-center">
+                    @TempData["Error"]
+                </div>
+            }
+
+            @if (TempData["Success"] != null)
+            {
+                <div class="alert alert-success text-center">
+                    @TempData["Success"]
+                </div>
+            }
+
+            <div class="row justify-content-center">
+                <div class="col-md-8 col-lg-6">
+                    <form method="post" action="/Contact/Index">
+                        <div class="mb-3">
+                            <label for="Name" class="form-label">Nombre</label>
+                            <input type="text" name="Name" id="Name" class="form-control" placeholder="Tu nombre completo" required />
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="Email" class="form-label">Correo electrónico</label>
+                            <input type="email" name="Email" id="Email" class="form-control" placeholder="tu@email.com" required />
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="Subject" class="form-label">Asunto</label>
+                            <input type="text" name="Subject" id="Subject" class="form-control" placeholder="Motivo del mensaje" required />
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="Message" class="form-label">Mensaje</label>
+                            <textarea name="Message" id="Message" rows="5" class="form-control" placeholder="Escribe tu mensaje aquí..." required></textarea>
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary btn-lg">Enviar mensaje</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
